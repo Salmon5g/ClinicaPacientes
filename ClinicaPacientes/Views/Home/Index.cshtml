@@ -1,0 +1,175 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%);
+        border-radius: 16px;
+        padding: 80px 40px;
+        color: white;
+        text-align: center;
+        margin-bottom: 50px;
+        box-shadow: 0 8px 32px rgba(13, 110, 253, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 50%;
+    }
+
+    .hero-section::after {
+        content: "";
+        position: absolute;
+        bottom: -80px;
+        left: -40px;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .hero-icon {
+        font-size: 72px;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.85;
+        margin-bottom: 35px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-hero {
+        background-color: white;
+        color: #0d6efd;
+        font-weight: 600;
+        padding: 14px 40px;
+        border-radius: 50px;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-hero:hover {
+        background-color: #0d6efd;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .info-cards {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px 24px;
+        text-align: center;
+        flex: 1;
+        min-width: 180px;
+        max-width: 220px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        border-top: 4px solid #0d6efd;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.15);
+    }
+
+    .info-card .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .info-card h5 {
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 6px;
+    }
+
+    .info-card p {
+        color: #6c757d;
+        font-size: 0.88rem;
+        margin: 0;
+    }
+
+    .footer-note {
+        text-align: center;
+        color: #6c757d;
+        font-size: 0.9rem;
+        padding: 10px 0 20px;
+    }
+
+    .footer-note span {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+</style>
+
+<!-- HERO -->
+<div class="hero-section">
+    <span class="hero-icon">🏥</span>
+    <h1 class="hero-title">Clínica Pacientes</h1>
+    <p class="hero-subtitle">Sistema de gestión de pacientes simple, rápido y confiable.</p>
+    <a asp-controller="Paciente" asp-action="Index" class="btn-hero">
+        📋 Ver Pacientes
+    </a>
+</div>
+
+<!-- TARJETAS DE INFO -->
+<div class="info-cards">
+    <div class="info-card">
+        <span class="card-icon">👤</span>
+        <h5>Registro</h5>
+        <p>Agrega y actualiza la información de cada paciente fácilmente.</p>
+    </div>
+    <div class="info-card">
+        <span class="card-icon">🔍</span>
+        <h5>Consulta</h5>
+        <p>Accede rápidamente a los datos de cualquier paciente registrado.</p>
+    </div>
+    <div class="info-card">
+        <span class="card-icon">📊</span>
+        <h5>Gestión</h5>
+        <p>Administra la información clínica desde un solo lugar.</p>
+    </div>
+    <div class="info-card">
+        <span class="card-icon">🔒</span>
+        <h5>Seguridad</h5>
+        <p>Tus datos están protegidos y disponibles cuando los necesitas.</p>
+    </div>
+</div>
+
+<p class="footer-note">Bienvenido al sistema de <span>Clínica Pacientes</span> — ¡gestiona con confianza!</p>
