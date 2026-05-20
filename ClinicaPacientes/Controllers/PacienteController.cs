@@ -27,12 +27,13 @@ namespace ClinicaPacientes.Controllers
                     {
                         idPaciente = reader.GetInt32("idPaciente"),
                         nombrePaciente = reader.GetString("nombrePaciente"),
+                        rutPaciente = reader.GetString("rutPaciente"),
                         fechaIngreso = reader.GetDateTime("fechaIngreso"),
-                        edadPaciente = reader.GetInt32("edadPaciente"),
-                        tienePrevision = reader.GetBoolean("tienePrevision"),
+                        edadPaciente = reader.GetInt32("edadPaciente"),                      
                         telefonoPaciente = reader.GetString("telefonoPaciente"),
                         emailPaciente = reader.GetString("emailPaciente"),
-                        direccionPaciente = reader.GetString("direccionPaciente")
+                        direccionPaciente = reader.GetString("direccionPaciente"),
+                        motivoConsulta = reader.GetString("motivoConsulta")
                     });
                 }
             }
