@@ -78,6 +78,22 @@
             ✔ Registrar
         </button>
 
+        <button type="button"
+                class="btn btn-danger"
+                onclick="eliminarPaciente()">
+
+            🗑 Eliminar
+
+        </button>
+
+        <button type="button"
+                class="btn btn-secondary"
+                onclick="cancelarFormulario()">
+
+            ✖ Cancelar
+
+        </button>
+
         @* Tu equipo agrega aquí los botones Modificar, Eliminar y Cancelar *@
     </div>
 
@@ -153,3 +169,70 @@
         });
     });
 </script>
+
+<script>
+
+    function eliminarPaciente() {
+
+        // Obtener ID seleccionado
+        let idPaciente = document.getElementById('idPaciente').value;
+
+        // Validar selección
+        if (idPaciente === "") {
+
+            alert("Debe seleccionar un paciente");
+
+            return;
+        }
+
+        // Confirmación
+        let confirmar = confirm("¿Desea eliminar este paciente?");
+
+        if (!confirmar) {
+            return;
+        }
+
+        // Crear formulario temporal
+        let form = document.createElement("form");
+
+        form.method = "post";
+        form.action = "/Administracion/Eliminar";
+
+        // Crear input oculto
+        let input = document.createElement("input");
+
+        input.type = "hidden";
+        input.name = "idPaciente";
+        input.value = idPaciente;
+
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+
+        form.submit();
+    }
+
+</script>
+
+<script>
+
+    function cancelarFormulario() {
+
+        // Limpiar todos los campos
+        document.getElementById('idPaciente').value = "";
+        document.getElementById('nombrePaciente').value = "";
+        document.getElementById('rutPaciente').value = "";
+        document.getElementById('fechaIngreso').value = "";
+        document.getElementById('edadPaciente').value = "";
+        document.getElementById('telefonoPaciente').value = "";
+        document.getElementById('emailPaciente').value = "";
+        document.getElementById('direccionPaciente').value = "";
+        document.getElementById('motivoConsulta').value = "";
+
+        // Quitar selección azul de la tabla
+        document.querySelectorAll('.fila-paciente')
+                .forEach(f => f.classList.remove('table-primary'));
+    }
+
+</script>
+

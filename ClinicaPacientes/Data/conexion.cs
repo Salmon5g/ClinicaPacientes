@@ -12,7 +12,7 @@ namespace ClinicaPacientes.Data
     {
         public static MySqlConnection ObtenerConexion()
         {
-            string conexion = "server=localhost;database=paginapacientes;user=root;password=Metraka20..;";
+            string conexion = "server=localhost;database=paginapacientes;user=root;password=Joaquin#2006;";
 
             return new MySqlConnection(conexion);
         }

@@ -1,5 +1,20 @@
+CREATE DATABASE paginapacientes;
 
 USE PAGINAPACIENTES;
+
+
+CREATE TABLE PACIENTE (
+    idPaciente INT AUTO_INCREMENT PRIMARY KEY,
+    nombrePaciente VARCHAR(100),
+    rutPaciente VARCHAR(20),
+    fechaIngreso DATETIME,
+    edadPaciente INT,
+    telefonoPaciente VARCHAR(20),
+    emailPaciente VARCHAR(100),
+    direccionPaciente VARCHAR(200),
+    motivoConsulta VARCHAR(255)
+);
+
 SELECT * FROM PACIENTE;
 
 INSERT INTO PACIENTE VALUES

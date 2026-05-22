@@ -78,5 +78,24 @@ namespace ClinicaPacientes.Controllers
         // ══════════════════════════════════════════
         // Aquí tu equipo agrega Modificar() y Eliminar()
         // ══════════════════════════════════════════
+
+        [HttpPost]
+        public ActionResult Eliminar(int idPaciente)
+        {
+            using (MySqlConnection conn = conexion.ObtenerConexion())
+            {
+                conn.Open();
+
+                string query = "DELETE FROM paciente WHERE idPaciente = @idPaciente";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("@idPaciente", idPaciente);
+
+                cmd.ExecuteNonQuery();
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }
