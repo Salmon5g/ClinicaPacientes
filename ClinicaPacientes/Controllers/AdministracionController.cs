@@ -79,6 +79,45 @@ namespace ClinicaPacientes.Controllers
         // Aquí tu equipo agrega Modificar() y Eliminar()
         // ══════════════════════════════════════════
 
+        // ══════════════════════════════════════════
+        // POST: Modificar paciente existente
+        // ══════════════════════════════════════════
+        [HttpPost]
+        public ActionResult Modificar(Paciente paciente)
+        {
+            using (MySqlConnection conn = conexion.ObtenerConexion())
+            {
+                conn.Open();
+                string query = @"UPDATE paciente SET
+                    nombrePaciente    = @nombrePaciente,
+                    rutPaciente       = @rutPaciente,
+                    fechaIngreso      = @fechaIngreso,
+                    edadPaciente      = @edadPaciente,
+                    telefonoPaciente  = @telefonoPaciente,
+                    emailPaciente     = @emailPaciente,
+                    direccionPaciente = @direccionPaciente,
+                    motivoConsulta    = @motivoConsulta
+                    WHERE idPaciente  = @idPaciente";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@idPaciente", paciente.idPaciente);
+                cmd.Parameters.AddWithValue("@nombrePaciente", paciente.nombrePaciente);
+                cmd.Parameters.AddWithValue("@rutPaciente", paciente.rutPaciente);
+                cmd.Parameters.AddWithValue("@fechaIngreso", paciente.fechaIngreso);
+                cmd.Parameters.AddWithValue("@edadPaciente", paciente.edadPaciente);
+                cmd.Parameters.AddWithValue("@telefonoPaciente", paciente.telefonoPaciente);
+                cmd.Parameters.AddWithValue("@emailPaciente", paciente.emailPaciente);
+                cmd.Parameters.AddWithValue("@direccionPaciente", paciente.direccionPaciente);
+                cmd.Parameters.AddWithValue("@motivoConsulta", paciente.motivoConsulta);
+                cmd.ExecuteNonQuery();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        // ══════════════════════════════════════════
+        // Aquí tu equipo agrega Eliminar()
+        // ══════════════════════════════════════════
         [HttpPost]
         public ActionResult Eliminar(int idPaciente)
         {

@@ -78,6 +78,10 @@
             ✔ Registrar
         </button>
 
+        <button type="button" class="btn btn-warning" id="btnModificar">
+            ✏️ Modificar
+        </button>
+
         <button type="button"
                 class="btn btn-danger"
                 onclick="eliminarPaciente()">
@@ -167,6 +171,21 @@
             document.getElementById('direccionPaciente').value = this.dataset.direccion;
             document.getElementById('motivoConsulta').value    = this.dataset.motivo;
         });
+    });
+    // Clic en Modificar → cambia el action del form y lo envía
+    document.getElementById('btnModificar').addEventListener('click', function () {
+
+        const id = document.getElementById('idPaciente').value;
+
+        // Verifica que haya un paciente seleccionado
+        if (!id) {
+            alert('Primero selecciona un paciente de la tabla.');
+            return;
+        }
+
+        // Cambia el action del formulario a Modificar
+        document.getElementById('formPaciente').action = '/Administracion/Modificar';
+        document.getElementById('formPaciente').submit();
     });
 </script>
 
