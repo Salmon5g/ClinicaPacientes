@@ -27,11 +27,41 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contacto">Contacto</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Administracion" asp-action="Index">Administración</a>
-                        </li>
+
+                        @* Administración solo visible si está logueado como admin *@
+                        @if (Context.Session.GetString("Usuario") != null &&
+                             Context.Session.GetInt32("EsAdmin") == 1)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Administracion" asp-action="Index">Administración</a>
+                            </li>
+                        }
 
                     </ul>
+
+                    @* Lado derecho: nombre del usuario + cerrar sesión, o botón de login *@
+                    <ul class="navbar-nav">
+                        @if (Context.Session.GetString("Usuario") != null)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-secondary">
+                                    👤 @Context.Session.GetString("Usuario")
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger fw-bold"
+                                   asp-controller="Login" asp-action="Logout">Cerrar Sesión</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                   asp-controller="Login" asp-action="Index">🔐 Admin Login</a>
+                            </li>
+                        }
+                    </ul>
+
                 </div>
             </div>
         </nav>

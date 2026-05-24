@@ -4,40 +4,37 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Registros de Pacientes</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.idPaciente)
+                ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.nombrePaciente)
+                Nombre Paciente
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.rutPaciente)
+                Rut
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.fechaIngreso)
+                Fecha de ingreso
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.edadPaciente)
+                Edad
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.telefonoPaciente)
+               Telefono
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.emailPaciente)
+                Correo electronico
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.direccionPaciente)
+                Direccion
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.motivoConsulta)
+                Motivo de consulta
             </th>
             <th></th>
         </tr>
@@ -72,11 +69,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.motivoConsulta)
             </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
+            
         </tr>
 }
     </tbody>

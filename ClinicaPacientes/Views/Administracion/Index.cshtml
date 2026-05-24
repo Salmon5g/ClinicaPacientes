@@ -31,7 +31,10 @@
         <div class="col-md-3">
             <label class="form-label fw-bold">RUT</label>
             <input type="text" id="rutPaciente" name="rutPaciente"
-                   class="form-control" placeholder="12345678-9" required />
+                   class="form-control" placeholder="12345678-9"
+                   pattern="\d{7,8}-[\dkK]"
+                   title="Formato válido: 12345678-9 o 1234567-K"
+                   required />
         </div>
 
         <div class="col-md-3">
@@ -43,7 +46,7 @@
         <div class="col-md-2">
             <label class="form-label fw-bold">Edad</label>
             <input type="number" id="edadPaciente" name="edadPaciente"
-                   class="form-control" required />
+                   class="form-control" min="1" max="120" required />
         </div>
 
         <div class="col-md-3">
@@ -72,29 +75,19 @@
 
     </div>
 
-    @* ══════ BOTÓN REGISTRAR (tu parte) ══════ *@
     <div class="mt-3 d-flex gap-2">
         <button type="submit" class="btn btn-success">
             ✔ Registrar
         </button>
-
-        <button type="button"
-                class="btn btn-danger"
-                onclick="eliminarPaciente()">
-
+        <button type="button" class="btn btn-warning" id="btnModificar">
+            ✏️ Modificar
+        </button>
+        <button type="button" class="btn btn-danger" onclick="eliminarPaciente()">
             🗑 Eliminar
-
         </button>
-
-        <button type="button"
-                class="btn btn-secondary"
-                onclick="cancelarFormulario()">
-
+        <button type="button" class="btn btn-secondary" onclick="cancelarFormulario()">
             ✖ Cancelar
-
         </button>
-
-        @* Tu equipo agrega aquí los botones Modificar, Eliminar y Cancelar *@
     </div>
 
 </form>
@@ -145,18 +138,54 @@
     </tbody>
 </table>
 
-@* ══════════════ JAVASCRIPT - Selección de fila ══════════════ *@
+@* ══════════════ JAVASCRIPT ══════════════ *@
 <script>
-    // Clic en fila → resalta y carga datos en el formulario
+
+    // Validación formato RUT (ej: 12345678-9 o 1234567-K)
+    function validarRut(rut) {
+        return /^\d{7,8}-[\dkK]$/.test(rut);
+    }
+
+    // Validación general de todos los campos 
+    function validarFormulario() {
+        const campos = [
+            'nombrePaciente', 'rutPaciente', 'fechaIngreso',
+            'edadPaciente',   'telefonoPaciente', 'emailPaciente',
+            'direccionPaciente', 'motivoConsulta'
+        ];
+
+        for (let id of campos) {
+            const campo = document.getElementById(id);
+            if (!campo.value.trim()) {
+                alert(`El campo "${campo.previousElementSibling.textContent.trim()}" es obligatorio.`);
+                campo.focus();
+                return false;
+            }
+        }
+
+        if (!validarRut(document.getElementById('rutPaciente').value.trim())) {
+            alert('El RUT debe tener el formato correcto.\nEjemplo: 12345678-9 o 1234567-K');
+            document.getElementById('rutPaciente').focus();
+            return false;
+        }
+
+        const edad = parseInt(document.getElementById('edadPaciente').value);
+        if (isNaN(edad) || edad < 1 || edad > 120) {
+            alert('La edad debe ser un número positivo entre 1 y 120.');
+            document.getElementById('edadPaciente').focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    // Selección de fila → carga datos en el formulario 
     document.querySelectorAll('.fila-paciente').forEach(function (fila) {
         fila.addEventListener('click', function () {
-
-            // Quita selección anterior y resalta la nueva
             document.querySelectorAll('.fila-paciente')
                     .forEach(f => f.classList.remove('table-primary'));
             this.classList.add('table-primary');
 
-            // Carga los datos en cada campo del formulario
             document.getElementById('idPaciente').value        = this.dataset.id;
             document.getElementById('nombrePaciente').value    = this.dataset.nombre;
             document.getElementById('rutPaciente').value       = this.dataset.rut;
@@ -168,71 +197,73 @@
             document.getElementById('motivoConsulta').value    = this.dataset.motivo;
         });
     });
-</script>
 
-<script>
+    // Registrar: validar antes de enviar el form 
+    document.getElementById('formPaciente').addEventListener('submit', function (e) {
+        if (!validarFormulario()) {
+            e.preventDefault();
+        }
+    });
 
+    // Modificar: validar, cambiar action y enviar 
+    document.getElementById('btnModificar').addEventListener('click', function () {
+        const id = document.getElementById('idPaciente').value;
+        if (!id) {
+            alert('Primero selecciona un paciente de la tabla.');
+            return;
+        }
+        if (!validarFormulario()) return;
+
+        document.getElementById('formPaciente').action = '/Administracion/Modificar';
+        document.getElementById('formPaciente').submit();
+    });
+
+    // Eliminar: confirmar y enviar con token anti-CSRF 
     function eliminarPaciente() {
+        const idPaciente = document.getElementById('idPaciente').value;
 
-        // Obtener ID seleccionado
-        let idPaciente = document.getElementById('idPaciente').value;
-
-        // Validar selección
-        if (idPaciente === "") {
-
-            alert("Debe seleccionar un paciente");
-
+        if (!idPaciente) {
+            alert('Debe seleccionar un paciente de la tabla.');
             return;
         }
 
-        // Confirmación
-        let confirmar = confirm("¿Desea eliminar este paciente?");
+        if (!confirm('¿Desea eliminar este paciente?')) return;
 
-        if (!confirmar) {
-            return;
-        }
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-        // Crear formulario temporal
-        let form = document.createElement("form");
+        const form        = document.createElement('form');
+        form.method       = 'post';
+        form.action       = '/Administracion/Eliminar';
 
-        form.method = "post";
-        form.action = "/Administracion/Eliminar";
+        const inputId     = document.createElement('input');
+        inputId.type      = 'hidden';
+        inputId.name      = 'idPaciente';
+        inputId.value     = idPaciente;
 
-        // Crear input oculto
-        let input = document.createElement("input");
+        const inputToken  = document.createElement('input');
+        inputToken.type   = 'hidden';
+        inputToken.name   = '__RequestVerificationToken';
+        inputToken.value  = token;
 
-        input.type = "hidden";
-        input.name = "idPaciente";
-        input.value = idPaciente;
-
-        form.appendChild(input);
-
+        form.appendChild(inputId);
+        form.appendChild(inputToken);
         document.body.appendChild(form);
-
         form.submit();
     }
 
-</script>
-
-<script>
-
+    // Cancelar: limpiar formulario 
     function cancelarFormulario() {
+        ['idPaciente', 'nombrePaciente', 'rutPaciente', 'fechaIngreso',
+         'edadPaciente', 'telefonoPaciente', 'emailPaciente',
+         'direccionPaciente', 'motivoConsulta'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
 
-        // Limpiar todos los campos
-        document.getElementById('idPaciente').value = "";
-        document.getElementById('nombrePaciente').value = "";
-        document.getElementById('rutPaciente').value = "";
-        document.getElementById('fechaIngreso').value = "";
-        document.getElementById('edadPaciente').value = "";
-        document.getElementById('telefonoPaciente').value = "";
-        document.getElementById('emailPaciente').value = "";
-        document.getElementById('direccionPaciente').value = "";
-        document.getElementById('motivoConsulta').value = "";
+        // Restaurar action original del formulario
+        document.getElementById('formPaciente').action = '/Administracion/Registrar';
 
-        // Quitar selección azul de la tabla
         document.querySelectorAll('.fila-paciente')
                 .forEach(f => f.classList.remove('table-primary'));
     }
 
 </script>
-

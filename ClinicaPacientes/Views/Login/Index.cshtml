@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white text-center">
+                <h4 class="mb-0">🔐 Panel Administrativo</h4>
+                <small>Clínica Pacientes</small>
+            </div>
+            <div class="card-body p-4">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>⚠️</strong> @ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form method="post" action="/Login/Login">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Usuario</label>
+                        <input type="text"
+                               name="nombreUsuario"
+                               class="form-control"
+                               placeholder="Ingrese su usuario"
+                               autocomplete="username"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Contraseña</label>
+                        <input type="password"
+                               name="contrasena"
+                               class="form-control"
+                               placeholder="Ingrese su contraseña"
+                               autocomplete="current-password"
+                               required />
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark btn-lg">
+                            Iniciar Sesión
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="card-footer text-center text-muted">
+                <small>Solo administradores tienen acceso</small>
+            </div>
+        </div>
+    </div>
+</div>
