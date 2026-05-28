@@ -8,6 +8,14 @@
 <hr />
 
 @* ══════════════ FORMULARIO ══════════════ *@
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        ⚠️ @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <form id="formPaciente" asp-action="Registrar" method="post">
     @Html.AntiForgeryToken()
 
@@ -154,6 +162,7 @@
             'direccionPaciente', 'motivoConsulta'
         ];
 
+
         for (let id of campos) {
             const campo = document.getElementById(id);
             if (!campo.value.trim()) {
@@ -162,12 +171,31 @@
                 return false;
             }
         }
+            if (!validarRut(document.getElementById('rutPaciente').value.trim())) {
+                alert('El RUT debe tener el formato correcto.\nEjemplo: 12345678-9 o 1234567-K');
+                document.getElementById('rutPaciente').focus();
+                return false;
+             }
 
-        if (!validarRut(document.getElementById('rutPaciente').value.trim())) {
-            alert('El RUT debe tener el formato correcto.\nEjemplo: 12345678-9 o 1234567-K');
-            document.getElementById('rutPaciente').focus();
-            return false;
+    // ← NUEVO: verificar RUT duplicado en la tabla
+    const rutIngresado = document.getElementById('rutPaciente').value.trim();
+    const idActual     = document.getElementById('idPaciente').value.trim();
+    if (rutYaRegistrado(rutIngresado, idActual)) {
+        alert('⚠️ El RUT ya está registrado en el sistema.\nPor favor ingrese otro.');
+        document.getElementById('rutPaciente').focus();
+        return false;
+    }
+
+            // Verifica si el RUT ya existe en la tabla (excluyendo el paciente actual al modificar)
+    function rutYaRegistrado(rut, idActual) {
+        const filas = document.querySelectorAll('.fila-paciente');
+        for (let fila of filas) {
+            if (fila.dataset.rut === rut && fila.dataset.id !== idActual) {
+                return true;
+            }
         }
+        return false;
+    }
 
         const edad = parseInt(document.getElementById('edadPaciente').value);
         if (isNaN(edad) || edad < 1 || edad > 120) {
@@ -195,6 +223,12 @@
             document.getElementById('emailPaciente').value     = this.dataset.email;
             document.getElementById('direccionPaciente').value = this.dataset.direccion;
             document.getElementById('motivoConsulta').value    = this.dataset.motivo;
+
+            // ✅ Bloquear RUT al seleccionar un paciente
+            const rutField = document.getElementById('rutPaciente');
+            rutField.readOnly = true;
+            rutField.style.backgroundColor = '#e9ecef';
+            rutField.style.cursor = 'not-allowed';
         });
     });
 
@@ -259,9 +293,13 @@
             document.getElementById(id).value = '';
         });
 
-        // Restaurar action original del formulario
-        document.getElementById('formPaciente').action = '/Administracion/Registrar';
+        // ✅ Desbloquear RUT al cancelar
+        const rutField = document.getElementById('rutPaciente');
+        rutField.readOnly = false;
+        rutField.style.backgroundColor = '';
+        rutField.style.cursor = '';
 
+        document.getElementById('formPaciente').action = '/Administracion/Registrar';
         document.querySelectorAll('.fila-paciente')
                 .forEach(f => f.classList.remove('table-primary'));
     }

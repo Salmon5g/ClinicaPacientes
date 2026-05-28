@@ -47,29 +47,44 @@ namespace ClinicaPacientes.Controllers
             return View(listaPacientes);
         }
 
-    
+
         // POST: Registrar nuevo paciente
-     
+
+        // POST: Registrar nuevo paciente
         [HttpPost]
         public ActionResult Registrar(Paciente paciente)
         {
-            
             if (HttpContext.Session.GetString("Usuario") == null ||
                 HttpContext.Session.GetInt32("EsAdmin") != 1)
             {
                 return RedirectToAction("Index", "Login");
             }
+
             using (MySqlConnection conn = conexion.ObtenerConexion())
             {
                 conn.Open();
+
+                // ✅ Verificar RUT duplicado antes de insertar
+                string checkRut = "SELECT COUNT(*) FROM paciente WHERE rutPaciente = @rut";
+                MySqlCommand cmdCheck = new MySqlCommand(checkRut, conn);
+                cmdCheck.Parameters.AddWithValue("@rut", paciente.rutPaciente);
+                int existe = Convert.ToInt32(cmdCheck.ExecuteScalar());
+
+                if (existe > 0)
+                {
+                    TempData["Error"] = "El RUT ingresado ya está registrado. Por favor ingrese otro.";
+                    return RedirectToAction("Index");
+                }
+
+                // Si no existe, proceder con el INSERT
                 string query = @"INSERT INTO paciente 
-                    (nombrePaciente, rutPaciente, fechaIngreso, 
-                     edadPaciente, telefonoPaciente, emailPaciente, 
-                     direccionPaciente, motivoConsulta)
-                    VALUES 
-                    (@nombrePaciente, @rutPaciente, @fechaIngreso,
-                     @edadPaciente, @telefonoPaciente, @emailPaciente,
-                     @direccionPaciente, @motivoConsulta)";
+            (nombrePaciente, rutPaciente, fechaIngreso, 
+             edadPaciente, telefonoPaciente, emailPaciente, 
+             direccionPaciente, motivoConsulta)
+            VALUES 
+            (@nombrePaciente, @rutPaciente, @fechaIngreso,
+             @edadPaciente, @telefonoPaciente, @emailPaciente,
+             @direccionPaciente, @motivoConsulta)";
 
                 MySqlCommand cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@nombrePaciente", paciente.nombrePaciente);
@@ -86,9 +101,9 @@ namespace ClinicaPacientes.Controllers
             return RedirectToAction("Index");
         }
 
-      
+
         // POST: Modificar paciente existente
-       
+
         [HttpPost]
         public ActionResult Modificar(Paciente paciente)
         {
