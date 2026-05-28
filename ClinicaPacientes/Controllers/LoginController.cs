@@ -66,6 +66,7 @@ namespace ClinicaPacientes.Controllers
             }
         }
 
+
         // GET: /Login/Logout
         public IActionResult Logout()
         {
