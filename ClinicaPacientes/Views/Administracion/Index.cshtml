@@ -21,12 +21,12 @@
 
     <div class="row g-3">
 
-        @* Campo ID - solo lectura, se llena al seleccionar un paciente *@
         <div class="col-md-2">
             <label class="form-label fw-bold">ID Paciente</label>
             <input type="number" id="idPaciente" name="idPaciente"
                    class="form-control" readonly
-                   style="background-color:#e9ecef; cursor:not-allowed;" />
+                   style="background-color:#e9ecef; cursor:not-allowed
+;" />
             <small class="text-muted">Generado automáticamente</small>
         </div>
 
@@ -87,10 +87,10 @@
         <button type="submit" class="btn btn-success">
             ✔ Registrar
         </button>
-        <button type="button" class="btn btn-warning" id="btnModificar">
+        <button type="button" class="btn btn-warning" id="btnModificar" disabled>
             ✏️ Modificar
         </button>
-        <button type="button" class="btn btn-danger" onclick="eliminarPaciente()">
+        <button type="button" class="btn btn-danger" id="btnEliminar" onclick="eliminarPaciente()" disabled>
             🗑 Eliminar
         </button>
         <button type="button" class="btn btn-secondary" onclick="cancelarFormulario()">
@@ -149,12 +149,10 @@
 @* ══════════════ JAVASCRIPT ══════════════ *@
 <script>
 
-    // Validación formato RUT (ej: 12345678-9 o 1234567-K)
     function validarRut(rut) {
         return /^\d{7,8}-[\dkK]$/.test(rut);
     }
 
-    // Validación general de todos los campos 
     function validarFormulario() {
         const campos = [
             'nombrePaciente', 'rutPaciente', 'fechaIngreso',
@@ -207,7 +205,6 @@
         return true;
     }
 
-    // Selección de fila → carga datos en el formulario 
     document.querySelectorAll('.fila-paciente').forEach(function (fila) {
         fila.addEventListener('click', function () {
             document.querySelectorAll('.fila-paciente')
@@ -223,23 +220,15 @@
             document.getElementById('emailPaciente').value     = this.dataset.email;
             document.getElementById('direccionPaciente').value = this.dataset.direccion;
             document.getElementById('motivoConsulta').value    = this.dataset.motivo;
-
-            // ✅ Bloquear RUT al seleccionar un paciente
-            const rutField = document.getElementById('rutPaciente');
-            rutField.readOnly = true;
-            rutField.style.backgroundColor = '#e9ecef';
-            rutField.style.cursor = 'not-allowed';
         });
     });
 
-    // Registrar: validar antes de enviar el form 
     document.getElementById('formPaciente').addEventListener('submit', function (e) {
         if (!validarFormulario()) {
             e.preventDefault();
         }
     });
 
-    // Modificar: validar, cambiar action y enviar 
     document.getElementById('btnModificar').addEventListener('click', function () {
         const id = document.getElementById('idPaciente').value;
         if (!id) {
@@ -252,7 +241,6 @@
         document.getElementById('formPaciente').submit();
     });
 
-    // Eliminar: confirmar y enviar con token anti-CSRF 
     function eliminarPaciente() {
         const idPaciente = document.getElementById('idPaciente').value;
 
@@ -285,7 +273,6 @@
         form.submit();
     }
 
-    // Cancelar: limpiar formulario 
     function cancelarFormulario() {
         ['idPaciente', 'nombrePaciente', 'rutPaciente', 'fechaIngreso',
          'edadPaciente', 'telefonoPaciente', 'emailPaciente',
@@ -293,15 +280,14 @@
             document.getElementById(id).value = '';
         });
 
-        // ✅ Desbloquear RUT al cancelar
-        const rutField = document.getElementById('rutPaciente');
-        rutField.readOnly = false;
-        rutField.style.backgroundColor = '';
-        rutField.style.cursor = '';
-
+        // Restaurar action original del formulario
         document.getElementById('formPaciente').action = '/Administracion/Registrar';
         document.querySelectorAll('.fila-paciente')
                 .forEach(f => f.classList.remove('table-primary'));
+
+        document.querySelector('[type="submit"]').disabled = false;
+        document.getElementById('btnModificar').disabled   = true;
+        document.getElementById('btnEliminar').disabled    = true;
     }
 
 </script>
