@@ -1,175 +1,1056 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
 <style>
-    .hero-section {
-        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%);
-        border-radius: 16px;
-        padding: 80px 40px;
+    /* ═══════════════════════════════════════════
+       VARIABLES Y RESET
+    ═══════════════════════════════════════════ */
+    :root {
+        --cp-primary: #0a5c8c;
+        --cp-primary-dark: #07436a;
+        --cp-primary-light: #1a7ab5;
+        --cp-accent: #00a99d;
+        --cp-accent-light: #e6f7f6;
+        --cp-red: #e63946;
+        --cp-text: #1e2d3d;
+        --cp-text-muted: #5a6a7a;
+        --cp-bg: #f4f8fb;
+        --cp-white: #ffffff;
+        --cp-border: #dce8f0;
+        --cp-shadow: 0 4px 20px rgba(10,92,140,0.10);
+        --cp-shadow-lg: 0 10px 40px rgba(10,92,140,0.18);
+    }
+
+    /* ═══════════════════════════════════════════
+       TOP BAR
+    ═══════════════════════════════════════════ */
+    .cp-topbar {
+        background: var(--cp-primary-dark);
+        color: rgba(255,255,255,0.88);
+        font-size: 0.82rem;
+        padding: 7px 0;
+    }
+
+    .cp-topbar .container-fluid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 0 32px;
+    }
+
+    .cp-topbar-left {
+        display: flex;
+        gap: 22px;
+        flex-wrap: wrap;
+    }
+
+    .cp-topbar-left span,
+    .cp-topbar-left a {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255,255,255,0.88);
+        text-decoration: none;
+    }
+
+    .cp-topbar-left a:hover { color: #fff; }
+
+    .cp-topbar-right a {
+        background: var(--cp-red);
+        color: #fff;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .cp-topbar-right a:hover { background: #c0392b; }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .cp-hero {
+        background: linear-gradient(120deg, var(--cp-primary-dark) 0%, var(--cp-primary) 45%, var(--cp-primary-light) 100%);
+        min-height: 520px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 70px 0;
+        margin-top: 0;
+    }
+
+    .cp-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .cp-hero-blob1 {
+        position: absolute;
+        top: -120px;
+        right: -100px;
+        width: 520px;
+        height: 520px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .cp-hero-blob2 {
+        position: absolute;
+        bottom: -150px;
+        left: -80px;
+        width: 420px;
+        height: 420px;
+        background: rgba(0,169,157,0.15);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .cp-hero-inner {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .cp-hero-text { color: white; }
+
+    .cp-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.25);
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        margin-bottom: 22px;
+        color: rgba(255,255,255,0.95);
+    }
+
+    .cp-hero-text h1 {
+        font-size: 3.2rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 18px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .cp-hero-text h1 span { color: #7ee8e2; }
+
+    .cp-hero-text p {
+        font-size: 1.05rem;
+        opacity: 0.88;
+        line-height: 1.7;
+        margin-bottom: 32px;
+        max-width: 460px;
+    }
+
+    .cp-hero-buttons {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .btn-cp-primary {
+        background: #fff;
+        color: var(--cp-primary);
+        padding: 13px 28px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.20);
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-cp-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+        color: var(--cp-primary);
+    }
+
+    .btn-cp-secondary {
+        border: 2px solid rgba(255,255,255,0.60);
+        color: #fff;
+        padding: 12px 26px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-cp-secondary:hover {
+        background: rgba(255,255,255,0.12);
+        border-color: #fff;
+        color: #fff;
+    }
+
+    /* Hero side cards */
+    .cp-hero-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .cp-hero-card {
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.20);
+        border-radius: 14px;
+        padding: 18px 22px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
         color: white;
+        transition: background 0.2s;
+        text-decoration: none;
+    }
+
+    .cp-hero-card:hover {
+        background: rgba(255,255,255,0.18);
+        color: white;
+    }
+
+    .cp-hero-card-ico {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    .cp-hero-card h5 {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 2px;
+    }
+
+    .cp-hero-card p {
+        font-size: 0.8rem;
+        opacity: 0.80;
+        margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       QUICK ACTIONS
+    ═══════════════════════════════════════════ */
+    .cp-quick-actions {
+        background: var(--cp-white);
+    }
+
+    .cp-qa-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 3px solid var(--cp-primary);
+    }
+
+    .cp-qa-item {
+        padding: 26px 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
-        margin-bottom: 50px;
-        box-shadow: 0 8px 32px rgba(13, 110, 253, 0.3);
+        gap: 10px;
+        border-right: 1px solid var(--cp-border);
+        transition: all 0.25s;
+        cursor: pointer;
         position: relative;
         overflow: hidden;
     }
 
-    .hero-section::before {
-        content: "";
+    .cp-qa-item:last-child { border-right: none; }
+
+    .cp-qa-item::after {
+        content: '';
         position: absolute;
-        top: -60px;
-        right: -60px;
-        width: 250px;
-        height: 250px;
-        background: rgba(255, 255, 255, 0.07);
-        border-radius: 50%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--cp-primary), var(--cp-accent));
+        transform: scaleX(0);
+        transition: transform 0.3s;
     }
 
-    .hero-section::after {
-        content: "";
-        position: absolute;
-        bottom: -80px;
-        left: -40px;
-        width: 300px;
-        height: 300px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 50%;
+    .cp-qa-item:hover { background: var(--cp-bg); }
+    .cp-qa-item:hover::after { transform: scaleX(1); }
+    .cp-qa-item.cp-emergency { background: #fff5f5; }
+    .cp-qa-item.cp-emergency:hover { background: #fee; }
+
+    .cp-qa-ico {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: var(--cp-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
     }
 
-    .hero-icon {
-        font-size: 72px;
-        margin-bottom: 20px;
+    .cp-qa-item.cp-emergency .cp-qa-ico { background: #fde8e8; }
+
+    .cp-qa-item h4 {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--cp-text);
+        margin: 0;
+    }
+
+    .cp-qa-item.cp-emergency h4 { color: var(--cp-red); }
+
+    .cp-qa-item p {
+        font-size: 0.78rem;
+        color: var(--cp-text-muted);
+        margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       STATS
+    ═══════════════════════════════════════════ */
+    .cp-stats {
+        background: linear-gradient(135deg, var(--cp-primary), var(--cp-accent));
+        padding: 50px 0;
+    }
+
+    .cp-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .cp-stat-item {
+        text-align: center;
+        color: white;
+        padding: 10px;
+    }
+
+    .cp-stat-number {
+        font-size: 2.6rem;
+        font-weight: 800;
+        display: block;
+        line-height: 1;
+    }
+
+    .cp-stat-label {
+        font-size: 0.88rem;
+        opacity: 0.85;
+        margin-top: 6px;
         display: block;
     }
 
-    .hero-title {
-        font-size: 3rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-        letter-spacing: 1px;
+    /* ═══════════════════════════════════════════
+       SECTION HEADER
+    ═══════════════════════════════════════════ */
+    .cp-section-header {
+        text-align: center;
+        margin-bottom: 50px;
     }
 
-    .hero-subtitle {
-        font-size: 1.2rem;
+    .cp-section-badge {
+        display: inline-block;
+        background: var(--cp-accent-light);
+        color: var(--cp-accent);
+        padding: 5px 16px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .cp-section-header h2 {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: var(--cp-text);
+        margin-bottom: 12px;
+    }
+
+    .cp-section-header p {
+        font-size: 1rem;
+        color: var(--cp-text-muted);
+        max-width: 560px;
+        margin: 0 auto;
+        line-height: 1.65;
+    }
+
+    /* ═══════════════════════════════════════════
+       SPECIALTIES
+    ═══════════════════════════════════════════ */
+    .cp-specialties {
+        padding: 80px 0;
+        background: var(--cp-bg);
+    }
+
+    .cp-spec-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .cp-spec-card {
+        background: var(--cp-white);
+        border-radius: 16px;
+        padding: 28px 24px;
+        display: flex;
+        align-items: flex-start;
+        gap: 18px;
+        box-shadow: var(--cp-shadow);
+        border: 1px solid var(--cp-border);
+        transition: all 0.25s;
+        cursor: pointer;
+    }
+
+    .cp-spec-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--cp-shadow-lg);
+        border-color: var(--cp-primary);
+    }
+
+    .cp-spec-ico {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        flex-shrink: 0;
+        background: var(--cp-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        transition: background 0.2s;
+    }
+
+    .cp-spec-card:hover .cp-spec-ico { background: var(--cp-accent-light); }
+
+    .cp-spec-card h4 {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        color: var(--cp-text);
+    }
+
+    .cp-spec-card p {
+        font-size: 0.82rem;
+        color: var(--cp-text-muted);
+        line-height: 1.55;
+        margin: 0 0 8px;
+    }
+
+    .cp-spec-link {
+        font-size: 0.8rem;
+        color: var(--cp-primary);
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .cp-view-all {
+        text-align: center;
+        margin-top: 36px;
+    }
+
+    .btn-cp-outline {
+        border: 2px solid var(--cp-primary);
+        color: var(--cp-primary);
+        padding: 12px 32px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all 0.25s;
+        display: inline-block;
+        text-decoration: none;
+    }
+
+    .btn-cp-outline:hover {
+        background: var(--cp-primary);
+        color: #fff;
+    }
+
+    /* ═══════════════════════════════════════════
+       WHY US
+    ═══════════════════════════════════════════ */
+    .cp-why-us {
+        background: var(--cp-white);
+        padding: 80px 0;
+    }
+
+    .cp-why-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .cp-why-visual {
+        background: linear-gradient(135deg, var(--cp-primary), var(--cp-accent));
+        border-radius: 20px;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 6rem;
+        color: rgba(255,255,255,0.7);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cp-why-visual::before {
+        content: '';
+        position: absolute;
+        bottom: -60px;
+        left: -60px;
+        width: 220px;
+        height: 220px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+
+    .cp-why-text h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--cp-text);
+        margin-bottom: 14px;
+        line-height: 1.25;
+    }
+
+    .cp-why-text > p {
+        font-size: 0.95rem;
+        color: var(--cp-text-muted);
+        line-height: 1.70;
+        margin-bottom: 30px;
+    }
+
+    .cp-why-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .cp-why-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 12px;
+        background: var(--cp-bg);
+        border-left: 4px solid var(--cp-accent);
+    }
+
+    .cp-why-item-ico {
+        font-size: 1.4rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .cp-why-item h5 {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 3px;
+        color: var(--cp-text);
+    }
+
+    .cp-why-item p {
+        font-size: 0.82rem;
+        color: var(--cp-text-muted);
+        margin: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       APPOINTMENT BAND
+    ═══════════════════════════════════════════ */
+    .cp-appt-band {
+        background: linear-gradient(120deg, var(--cp-primary-dark), var(--cp-primary-light));
+        padding: 60px 24px;
+        text-align: center;
+        color: white;
+    }
+
+    .cp-appt-band h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .cp-appt-band p {
+        font-size: 1rem;
         opacity: 0.85;
-        margin-bottom: 35px;
-        max-width: 500px;
+        margin-bottom: 30px;
+        max-width: 520px;
         margin-left: auto;
         margin-right: auto;
     }
 
-    .btn-hero {
-        background-color: white;
-        color: #0d6efd;
-        font-weight: 600;
-        padding: 14px 40px;
-        border-radius: 50px;
-        font-size: 1rem;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        position: relative;
-        z-index: 1;
-    }
-
-    .btn-hero:hover {
-        background-color: #0d6efd;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    }
-
-    .info-cards {
+    .cp-appt-band .cp-cta-row {
         display: flex;
-        gap: 24px;
+        gap: 16px;
         justify-content: center;
         flex-wrap: wrap;
-        margin-bottom: 40px;
     }
 
-    .info-card {
+    .btn-cp-white {
         background: white;
-        border-radius: 12px;
-        padding: 30px 24px;
-        text-align: center;
-        flex: 1;
-        min-width: 180px;
-        max-width: 220px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        border-top: 4px solid #0d6efd;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        color: var(--cp-primary);
+        padding: 13px 30px;
+        border-radius: 30px;
+        font-weight: 700;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.20);
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
     }
 
-    .info-card:hover {
+    .btn-cp-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+        color: var(--cp-primary);
+    }
+
+    .btn-cp-border-white {
+        border: 2px solid rgba(255,255,255,0.60);
+        color: white;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-cp-border-white:hover {
+        background: rgba(255,255,255,0.12);
+        border-color: white;
+        color: white;
+    }
+
+    /* ═══════════════════════════════════════════
+       NEWS
+    ═══════════════════════════════════════════ */
+    .cp-news {
+        padding: 80px 0;
+        background: var(--cp-bg);
+    }
+
+    .cp-news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .cp-news-card {
+        background: var(--cp-white);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--cp-shadow);
+        border: 1px solid var(--cp-border);
+        transition: all 0.25s;
+    }
+
+    .cp-news-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.15);
+        box-shadow: var(--cp-shadow-lg);
     }
 
-    .info-card .card-icon {
-        font-size: 2.5rem;
-        margin-bottom: 12px;
+    .cp-news-img {
+        height: 170px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+    }
+
+    .cp-news-img.c1 { background: linear-gradient(135deg, #e8f4ff, #c0e0ff); }
+    .cp-news-img.c2 { background: linear-gradient(135deg, #e6f7f6, #a8eae5); }
+    .cp-news-img.c3 { background: linear-gradient(135deg, #fff3e8, #ffd6a8); }
+
+    .cp-news-body { padding: 20px 22px; }
+
+    .cp-news-tag {
+        font-size: 0.73rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--cp-accent);
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
         display: block;
     }
 
-    .info-card h5 {
+    .cp-news-body h4 {
         font-weight: 700;
-        color: #1a1a2e;
-        margin-bottom: 6px;
+        font-size: 0.97rem;
+        color: var(--cp-text);
+        margin-bottom: 8px;
+        line-height: 1.45;
     }
 
-    .info-card p {
-        color: #6c757d;
-        font-size: 0.88rem;
-        margin: 0;
+    .cp-news-body p {
+        font-size: 0.82rem;
+        color: var(--cp-text-muted);
+        margin: 0 0 12px;
+        line-height: 1.55;
     }
 
-    .footer-note {
-        text-align: center;
-        color: #6c757d;
-        font-size: 0.9rem;
-        padding: 10px 0 20px;
+    .cp-news-meta {
+        font-size: 0.78rem;
+        color: var(--cp-text-muted);
     }
 
-    .footer-note span {
-        color: #0d6efd;
-        font-weight: 600;
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @@media (max-width: 992px) {
+        .cp-hero-inner { grid-template-columns: 1fr; }
+        .cp-hero-cards { display: none; }
+        .cp-spec-grid { grid-template-columns: repeat(2, 1fr); }
+        .cp-why-grid { grid-template-columns: 1fr; }
+        .cp-why-visual { height: 220px; }
+        .cp-stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .cp-news-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @@media (max-width: 640px) {
+        .cp-qa-grid { grid-template-columns: repeat(2, 1fr); }
+        .cp-spec-grid { grid-template-columns: 1fr; }
+        .cp-hero-text h1 { font-size: 2.2rem; }
+        .cp-news-grid { grid-template-columns: 1fr; }
     }
 </style>
 
-<!-- HERO -->
-<div class="hero-section">
-    <span class="hero-icon">🏥</span>
-    <h1 class="hero-title">Clínica Pacientes</h1>
-    <p class="hero-subtitle">Sistema de gestión de pacientes simple, rápido y confiable.</p>
-    <a asp-controller="Paciente" asp-action="Index" class="btn-hero">
-        📋 Ver Pacientes
-    </a>
-</div>
-
-<!-- TARJETAS DE INFO -->
-<div class="info-cards">
-    <div class="info-card">
-        <span class="card-icon">👤</span>
-        <h5>Registro</h5>
-        <p>Agrega y actualiza la información de cada paciente fácilmente.</p>
-    </div>
-    <div class="info-card">
-        <span class="card-icon">🔍</span>
-        <h5>Consulta</h5>
-        <p>Accede rápidamente a los datos de cualquier paciente registrado.</p>
-    </div>
-    <div class="info-card">
-        <span class="card-icon">📊</span>
-        <h5>Gestión</h5>
-        <p>Administra la información clínica desde un solo lugar.</p>
-    </div>
-    <div class="info-card">
-        <span class="card-icon">🔒</span>
-        <h5>Seguridad</h5>
-        <p>Tus datos están protegidos y disponibles cuando los necesitas.</p>
+<!-- ════════════════════════════════════════════════
+     TOP BAR
+════════════════════════════════════════════════ -->
+<div class="cp-topbar">
+    <div class="container-fluid">
+        <div class="cp-topbar-left">
+            <a href="tel:+56212345678">
+                <i class="fas fa-phone-alt"></i>
+                +56 2 1234 5678
+            </a>
+            <a href="mailto:contacto@clinicapacientes.cl">
+                <i class="fas fa-envelope"></i>
+                contacto@clinicapacientes.cl
+            </a>
+            <span>
+                <i class="fas fa-clock"></i>
+                Lun–Vie: 08:00–20:00 &nbsp;|&nbsp; Sáb: 09:00–14:00
+            </span>
+        </div>
+        <div class="cp-topbar-right">
+            <a href="#"><i class="fas fa-ambulance"></i> Urgencias 24/7</a>
+        </div>
     </div>
 </div>
 
-<p class="footer-note">Bienvenido al sistema de <span>Clínica Pacientes</span> — ¡gestiona con confianza!</p>
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="cp-hero">
+    <div class="cp-hero-blob1"></div>
+    <div class="cp-hero-blob2"></div>
+    <div class="cp-hero-inner">
+        <div class="cp-hero-text">
+            <span class="cp-hero-badge">🏆 Acreditada por la Superintendencia de Salud</span>
+            <h1>Tu salud,<br><span>nuestra prioridad</span></h1>
+            <p>Atención médica de excelencia con los mejores especialistas y tecnología de vanguardia. Estamos aquí para cuidarte a ti y a toda tu familia.</p>
+            <div class="cp-hero-buttons">
+                <a asp-controller="Paciente" asp-action="Create" class="btn-cp-primary">
+                    <i class="fas fa-calendar-check"></i> Agendar Consulta
+                </a>
+                <a asp-controller="Paciente" asp-action="Index" class="btn-cp-secondary">
+                    <i class="fas fa-stethoscope"></i> Portal Pacientes
+                </a>
+            </div>
+        </div>
+        <div class="cp-hero-cards">
+            <a href="#" class="cp-hero-card">
+                <div class="cp-hero-card-ico">🚨</div>
+                <div>
+                    <h5>Urgencias 24/7</h5>
+                    <p>Atención inmediata todos los días del año</p>
+                </div>
+            </a>
+            <a asp-controller="Paciente" asp-action="Create" class="cp-hero-card">
+                <div class="cp-hero-card-ico">📋</div>
+                <div>
+                    <h5>Registrar Paciente</h5>
+                    <p>Agrega un nuevo paciente al sistema</p>
+                </div>
+            </a>
+            <a asp-controller="Paciente" asp-action="Index" class="cp-hero-card">
+                <div class="cp-hero-card-ico">🔬</div>
+                <div>
+                    <h5>Ver Pacientes</h5>
+                    <p>Gestiona la lista de pacientes registrados</p>
+                </div>
+            </a>
+            <a href="#" class="cp-hero-card">
+                <div class="cp-hero-card-ico">💊</div>
+                <div>
+                    <h5>Farmacia Clínica</h5>
+                    <p>Medicamentos con y sin receta médica</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     ACCESOS RÁPIDOS
+════════════════════════════════════════════════ -->
+<div class="cp-quick-actions">
+    <div class="cp-qa-grid">
+        <div class="cp-qa-item cp-emergency">
+            <div class="cp-qa-ico">🚨</div>
+            <h4>Urgencias</h4>
+            <p>Atención 24/7 los 365 días</p>
+        </div>
+        <a asp-controller="Paciente" asp-action="Create" class="cp-qa-item" style="text-decoration:none">
+            <div class="cp-qa-ico">📅</div>
+            <h4>Registrar Paciente</h4>
+            <p>Agrega un nuevo paciente</p>
+        </a>
+        <div class="cp-qa-item">
+            <div class="cp-qa-ico">🔬</div>
+            <h4>Mis Resultados</h4>
+            <p>Exámenes e informes médicos</p>
+        </div>
+        <a asp-controller="Paciente" asp-action="Index" class="cp-qa-item" style="text-decoration:none">
+            <div class="cp-qa-ico">👤</div>
+            <h4>Portal Pacientes</h4>
+            <p>Historial y ficha clínica</p>
+        </a>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     ESTADÍSTICAS
+════════════════════════════════════════════════ -->
+<section class="cp-stats">
+    <div class="cp-stats-grid">
+        <div class="cp-stat-item">
+            <span class="cp-stat-number">+15.000</span>
+            <span class="cp-stat-label">Pacientes Atendidos</span>
+        </div>
+        <div class="cp-stat-item">
+            <span class="cp-stat-number">+50</span>
+            <span class="cp-stat-label">Especialistas</span>
+        </div>
+        <div class="cp-stat-item">
+            <span class="cp-stat-number">+20</span>
+            <span class="cp-stat-label">Años de Experiencia</span>
+        </div>
+        <div class="cp-stat-item">
+            <span class="cp-stat-number">+30</span>
+            <span class="cp-stat-label">Especialidades</span>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     ESPECIALIDADES
+════════════════════════════════════════════════ -->
+<section class="cp-specialties">
+    <div class="container">
+        <div class="cp-section-header">
+            <span class="cp-section-badge">Nuestros Servicios</span>
+            <h2>Especialidades Médicas</h2>
+            <p>Contamos con un equipo completo de especialistas para atender todas tus necesidades de salud</p>
+        </div>
+    </div>
+    <div class="cp-spec-grid">
+        <div class="cp-spec-card">
+            <div class="cp-spec-ico">🫀</div>
+            <div>
+                <h4>Cardiología</h4>
+                <p>Diagnóstico y tratamiento de enfermedades del corazón con equipos de última generación.</p>
+                <span class="cp-spec-link">Ver especialidad →</span>
+            </div>
+        </div>
+        <div class="cp-spec-card">
+            <div class="cp-spec-ico">🧠</div>
+            <div>
+                <h4>Neurología</h4>
+                <p>Atención especializada en enfermedades del sistema nervioso central y periférico.</p>
+                <span class="cp-spec-link">Ver especialidad →</span>
+            </div>
+        </div>
+        <div class="cp-spec-card">
+            <div class="cp-spec-ico">🦴</div>
+            <div>
+                <h4>Traumatología</h4>
+                <p>Tratamiento de lesiones musculoesqueléticas, fracturas y patologías ortopédicas.</p>
+                <span class="cp-spec-link">Ver especialidad →</span>
+            </div>
+        </div>
+        <div class="cp-spec-card">
+            <div class="cp-spec-ico">🍼</div>
+            <div>
+                <h4>Pediatría</h4>
+                <p>Cuidado integral de la salud infantil desde el nacimiento hasta la adolescencia.</p>
+                <span class="cp-spec-link">Ver especialidad →</span>
+            </div>
+        </div>
+        <div class="cp-spec-card">
+            <div class="cp-spec-ico">🔬</div>
+            <div>
+                <h4>Laboratorio Clínico</h4>
+                <p>Análisis clínicos de alta precisión con resultados rápidos y confiables.</p>
+                <span class="cp-spec-link">Ver especialidad →</span>
+            </div>
+        </div>
+        <div class="cp-spec-card">
+            <div class="cp-spec-ico">🩻</div>
+            <div>
+                <h4>Imagenología</h4>
+                <p>Radiología, ecografías, resonancias magnéticas y tomografías computarizadas.</p>
+                <span class="cp-spec-link">Ver especialidad →</span>
+            </div>
+        </div>
+    </div>
+    <div class="cp-view-all">
+        <a href="#" class="btn-cp-outline">Ver todas las especialidades</a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     POR QUÉ ELEGIRNOS
+════════════════════════════════════════════════ -->
+<section class="cp-why-us">
+    <div class="cp-why-grid">
+        <div class="cp-why-visual">🏥</div>
+        <div class="cp-why-text">
+            <span class="cp-section-badge">¿Por qué elegirnos?</span>
+            <h2>Excelencia médica al servicio de tu bienestar</h2>
+            <p>En Clínica Pacientes combinamos más de 20 años de experiencia con tecnología de vanguardia para brindarte una atención de alta calidad, segura y centrada en el paciente.</p>
+            <div class="cp-why-list">
+                <div class="cp-why-item">
+                    <span class="cp-why-item-ico">🏆</span>
+                    <div>
+                        <h5>Acreditación de Calidad</h5>
+                        <p>Certificados por la Superintendencia de Salud con los más altos estándares de calidad asistencial.</p>
+                    </div>
+                </div>
+                <div class="cp-why-item">
+                    <span class="cp-why-item-ico">🤝</span>
+                    <div>
+                        <h5>Atención Personalizada</h5>
+                        <p>Cada paciente recibe un trato humano, cálido y personalizado en cada etapa de su atención.</p>
+                    </div>
+                </div>
+                <div class="cp-why-item">
+                    <span class="cp-why-item-ico">💻</span>
+                    <div>
+                        <h5>Tecnología de Vanguardia</h5>
+                        <p>Equipamiento médico de última generación para diagnósticos precisos y tratamientos eficaces.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BANDA AGENDAR HORA
+════════════════════════════════════════════════ -->
+<section class="cp-appt-band">
+    <h2>¿Necesitas atención médica?</h2>
+    <p>Agenda tu consulta de forma rápida y sencilla. Nuestro equipo está listo para atenderte.</p>
+    <div class="cp-cta-row">
+        <a asp-controller="Paciente" asp-action="Create" class="btn-cp-white">
+            <i class="fas fa-calendar-check"></i> Registrar Nuevo Paciente
+        </a>
+        <a href="tel:+56212345678" class="btn-cp-border-white">
+            <i class="fas fa-phone-alt"></i> +56 2 1234 5678
+        </a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     NOTICIAS / CONSEJOS DE SALUD
+════════════════════════════════════════════════ -->
+<section class="cp-news">
+    <div class="container">
+        <div class="cp-section-header">
+            <span class="cp-section-badge">Novedades</span>
+            <h2>Noticias y Consejos de Salud</h2>
+            <p>Mantente informado con los últimos artículos de nuestro equipo médico</p>
+        </div>
+    </div>
+    <div class="cp-news-grid">
+        <div class="cp-news-card">
+            <div class="cp-news-img c1">🫀</div>
+            <div class="cp-news-body">
+                <span class="cp-news-tag">Cardiología</span>
+                <h4>5 hábitos para mantener un corazón sano este invierno</h4>
+                <p>Descubre las recomendaciones de nuestros cardiólogos para proteger tu salud cardiovascular.</p>
+                <span class="cp-news-meta">📅 20 Mayo 2025</span>
+            </div>
+        </div>
+        <div class="cp-news-card">
+            <div class="cp-news-img c2">🧬</div>
+            <div class="cp-news-body">
+                <span class="cp-news-tag">Prevención</span>
+                <h4>La importancia de los chequeos médicos preventivos anuales</h4>
+                <p>Un chequeo anual puede detectar enfermedades a tiempo y mejorar tu calidad de vida.</p>
+                <span class="cp-news-meta">📅 12 Mayo 2025</span>
+            </div>
+        </div>
+        <div class="cp-news-card">
+            <div class="cp-news-img c3">🍼</div>
+            <div class="cp-news-body">
+                <span class="cp-news-tag">Pediatría</span>
+                <h4>Guía completa de vacunación infantil 2025</h4>
+                <p>El calendario de vacunación actualizado para proteger a tus hijos de enfermedades prevenibles.</p>
+                <span class="cp-news-meta">📅 5 Mayo 2025</span>
+            </div>
+        </div>
+    </div>
+</section>
