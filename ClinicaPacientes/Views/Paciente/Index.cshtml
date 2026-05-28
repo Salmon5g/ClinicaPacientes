@@ -1,76 +1,604 @@
 ﻿@model IEnumerable<ClinicaPacientes.Models.Paciente>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pacientes";
 }
 
-<h1>Registros de Pacientes</h1>
+<style>
+    /* ═══════════════════════════════════════════
+       VARIABLES (mismas que Inicio)
+    ═══════════════════════════════════════════ */
+    :root {
+        --cp-primary:       #0a5c8c;
+        --cp-primary-dark:  #07436a;
+        --cp-primary-light: #1a7ab5;
+        --cp-accent:        #00a99d;
+        --cp-accent-light:  #e6f7f6;
+        --cp-red:           #e63946;
+        --cp-text:          #1e2d3d;
+        --cp-text-muted:    #5a6a7a;
+        --cp-bg:            #f4f8fb;
+        --cp-white:         #ffffff;
+        --cp-border:        #dce8f0;
+        --cp-shadow:        0 4px 20px rgba(10,92,140,0.10);
+        --cp-shadow-lg:     0 10px 40px rgba(10,92,140,0.18);
+    }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-                Nombre Paciente
-            </th>
-            <th>
-                Rut
-            </th>
-            <th>
-                Fecha de ingreso
-            </th>
-            <th>
-                Edad
-            </th>
-            <th>
-               Telefono
-            </th>
-            <th>
-                Correo electronico
-            </th>
-            <th>
-                Direccion
-            </th>
-            <th>
-                Motivo de consulta
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.idPaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.nombrePaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.rutPaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fechaIngreso)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.edadPaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.telefonoPaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.emailPaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.direccionPaciente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.motivoConsulta)
-            </td>
-            
-        </tr>
-}
-    </tbody>
-</table>
+    /* ═══════════════════════════════════════════
+       HERO BANNER
+    ═══════════════════════════════════════════ */
+    .pac-hero {
+        background: linear-gradient(120deg, var(--cp-primary-dark) 0%, var(--cp-primary) 50%, var(--cp-primary-light) 100%);
+        padding: 64px 24px 54px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pac-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .pac-hero-blob {
+        position: absolute;
+        width: 380px;
+        height: 380px;
+        border-radius: 50%;
+        background: rgba(0,169,157,0.15);
+        bottom: -140px;
+        right: -80px;
+        pointer-events: none;
+    }
+
+    .pac-hero-inner {
+        position: relative;
+        z-index: 2;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .pac-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.25);
+        padding: 6px 18px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: rgba(255,255,255,0.95);
+    }
+
+    .pac-hero h1 {
+        font-size: 2.6rem;
+        font-weight: 800;
+        margin-bottom: 14px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .pac-hero h1 span { color: #7ee8e2; }
+
+    .pac-hero p {
+        font-size: 1rem;
+        opacity: 0.88;
+        line-height: 1.7;
+        max-width: 560px;
+        margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════
+       STATS BAR
+    ═══════════════════════════════════════════ */
+    .pac-stats-bar {
+        background: var(--cp-white);
+        border-bottom: 3px solid var(--cp-primary);
+        box-shadow: var(--cp-shadow);
+    }
+
+    .pac-stats-bar .inner {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 860px;
+        margin: 0 auto;
+    }
+
+    .pac-stat {
+        text-align: center;
+        padding: 20px 10px;
+        border-right: 1px solid var(--cp-border);
+    }
+
+    .pac-stat:last-child { border-right: none; }
+
+    .pac-stat-num {
+        display: block;
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: var(--cp-primary);
+        line-height: 1;
+    }
+
+    .pac-stat-lbl {
+        font-size: 0.8rem;
+        color: var(--cp-text-muted);
+        margin-top: 4px;
+        display: block;
+    }
+
+    /* ═══════════════════════════════════════════
+       AVISO PRIVACIDAD
+    ═══════════════════════════════════════════ */
+    .pac-privacy-notice {
+        background: var(--cp-accent-light);
+        border-left: 4px solid var(--cp-accent);
+        border-radius: 10px;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.87rem;
+        color: var(--cp-text-muted);
+        margin-bottom: 28px;
+    }
+
+    .pac-privacy-notice span { font-size: 1.4rem; }
+
+    /* ═══════════════════════════════════════════
+       TABLA
+    ═══════════════════════════════════════════ */
+    .pac-section {
+        background: var(--cp-bg);
+        padding: 54px 0 70px;
+    }
+
+    .pac-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .pac-section-header {
+        margin-bottom: 30px;
+    }
+
+    .pac-section-badge {
+        display: inline-block;
+        background: var(--cp-accent-light);
+        color: var(--cp-accent);
+        padding: 5px 16px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .pac-section-header h2 {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: var(--cp-text);
+        margin: 0;
+    }
+
+    .pac-section-header p {
+        font-size: 0.9rem;
+        color: var(--cp-text-muted);
+        margin: 6px 0 0;
+    }
+
+    /* Buscador */
+    .pac-search-bar {
+        position: relative;
+        max-width: 340px;
+    }
+
+    .pac-search-bar input {
+        width: 100%;
+        border: 1.5px solid var(--cp-border);
+        border-radius: 30px;
+        padding: 10px 18px 10px 42px;
+        font-size: 0.88rem;
+        color: var(--cp-text);
+        background: var(--cp-white);
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .pac-search-bar input:focus { border-color: var(--cp-primary); }
+
+    .pac-search-bar i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--cp-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .pac-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    /* Tabla estilizada */
+    .pac-table-wrap {
+        background: var(--cp-white);
+        border-radius: 16px;
+        box-shadow: var(--cp-shadow);
+        border: 1px solid var(--cp-border);
+        overflow: hidden;
+    }
+
+    .pac-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .pac-table thead {
+        background: linear-gradient(90deg, var(--cp-primary), var(--cp-primary-light));
+        color: white;
+    }
+
+    .pac-table thead th {
+        padding: 14px 18px;
+        font-weight: 600;
+        font-size: 0.82rem;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .pac-table tbody tr {
+        border-bottom: 1px solid var(--cp-border);
+        transition: background 0.15s;
+    }
+
+    .pac-table tbody tr:last-child { border-bottom: none; }
+
+    .pac-table tbody tr:hover { background: var(--cp-bg); }
+
+    .pac-table td {
+        padding: 13px 18px;
+        color: var(--cp-text);
+        vertical-align: middle;
+    }
+
+    /* Avatar inicial */
+    .pac-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--cp-primary), var(--cp-accent));
+        color: white;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .pac-name-cell {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    /* Badge motivo */
+    .pac-motivo-badge {
+        display: inline-block;
+        background: var(--cp-accent-light);
+        color: var(--cp-accent);
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    /* Badge edad */
+    .pac-edad-badge {
+        display: inline-block;
+        background: #e8f4ff;
+        color: var(--cp-primary);
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    /* Fecha */
+    .pac-fecha {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--cp-text-muted);
+        font-size: 0.85rem;
+    }
+
+    /* Sin resultados */
+    .pac-empty {
+        text-align: center;
+        padding: 54px 20px;
+        color: var(--cp-text-muted);
+    }
+
+    .pac-empty span { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    /* Contador */
+    .pac-count-chip {
+        background: var(--cp-primary);
+        color: white;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA INFERIOR
+    ═══════════════════════════════════════════ */
+    .pac-cta {
+        background: linear-gradient(120deg, var(--cp-primary-dark), var(--cp-primary-light));
+        padding: 56px 24px;
+        text-align: center;
+        color: white;
+    }
+
+    .pac-cta h2 {
+        font-size: 1.9rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .pac-cta p {
+        font-size: 0.97rem;
+        opacity: 0.85;
+        margin-bottom: 28px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.65;
+    }
+
+    .pac-cta-btns {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .btn-pac-white {
+        background: white;
+        color: var(--cp-primary);
+        padding: 13px 28px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 0.92rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-pac-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.26);
+        color: var(--cp-primary);
+    }
+
+    .btn-pac-outline {
+        border: 2px solid rgba(255,255,255,0.60);
+        color: white;
+        padding: 12px 26px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.92rem;
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-pac-outline:hover {
+        background: rgba(255,255,255,0.12);
+        border-color: white;
+        color: white;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @@media (max-width: 768px) {
+        .pac-hero h1 { font-size: 1.9rem; }
+        .pac-stats-bar .inner { grid-template-columns: repeat(3,1fr); }
+        .pac-table thead th:nth-child(1),
+        .pac-table td:nth-child(1) { display: none; }
+    }
+
+    @@media (max-width: 560px) {
+        .pac-stats-bar .inner { grid-template-columns: 1fr; }
+        .pac-stat { border-right: none; border-bottom: 1px solid var(--cp-border); }
+        .pac-stat:last-child { border-bottom: none; }
+    }
+</style>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<div class="pac-hero">
+    <div class="pac-hero-blob"></div>
+    <div class="pac-hero-inner">
+        <span class="pac-hero-badge">🏥 Portal de Transparencia Clínica</span>
+        <h1>Nuestros <span>Pacientes</span></h1>
+        <p>Aquí puedes ver un resumen de quienes han confiado en nosotros. Protegemos la privacidad mostrando solo información general.</p>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     BARRA DE ESTADÍSTICAS
+════════════════════════════════════════════════ -->
+<div class="pac-stats-bar">
+    <div class="inner">
+        <div class="pac-stat">
+            <span class="pac-stat-num">@Model.Count()</span>
+            <span class="pac-stat-lbl">Pacientes Registrados</span>
+        </div>
+        <div class="pac-stat">
+            <span class="pac-stat-num">@(Model.Any() ? Model.Average(p => p.edadPaciente).ToString("0") : "—")</span>
+            <span class="pac-stat-lbl">Edad Promedio</span>
+        </div>
+        <div class="pac-stat">
+            <span class="pac-stat-num">@(Model.Any() ? Model.Max(p => p.fechaIngreso).ToString("MMM yyyy") : "—")</span>
+            <span class="pac-stat-lbl">Última Atención</span>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     TABLA PRINCIPAL
+════════════════════════════════════════════════ -->
+<section class="pac-section">
+    <div class="pac-container">
+
+        <div class="pac-toolbar">
+            <div class="pac-section-header">
+                <span class="pac-section-badge">Listado Público</span>
+                <h2>Registro de Pacientes &nbsp;<span class="pac-count-chip">@Model.Count()</span></h2>
+                <p>Datos generales — información sensible protegida</p>
+            </div>
+            <div class="pac-search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="buscador" placeholder="Buscar por nombre o motivo…" oninput="filtrarTabla()" />
+            </div>
+        </div>
+
+        <!-- Aviso de privacidad -->
+        <div class="pac-privacy-notice">
+            <span>🔒</span>
+            <div>
+                <strong>Privacidad garantizada:</strong> Se omiten RUT, teléfono, correo y dirección de los pacientes.
+                Solo personal autorizado accede a la ficha completa.
+            </div>
+        </div>
+
+        <div class="pac-table-wrap">
+            <table class="pac-table" id="tablaPacientes">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Paciente</th>
+                        <th>Edad</th>
+                        <th>Fecha de Ingreso</th>
+                        <th>Motivo de Consulta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int fila = 1;}
+                    @foreach (var item in Model)
+                    {
+                        string inicial = item.nombrePaciente?.Length > 0
+                            ? item.nombrePaciente[0].ToString().ToUpper()
+                            : "?";
+
+                        <tr>
+                            <td style="color:var(--cp-text-muted);font-size:0.82rem;font-weight:600;">@fila</td>
+                            <td>
+                                <div class="pac-name-cell">
+                                    <div class="pac-avatar">@inicial</div>
+                                    <span style="font-weight:600;">@item.nombrePaciente</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="pac-edad-badge">@item.edadPaciente años</span>
+                            </td>
+                            <td>
+                                <span class="pac-fecha">
+                                    <i class="fas fa-calendar-alt" style="color:var(--cp-accent)"></i>
+                                    @item.fechaIngreso.ToString("dd MMM yyyy")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="pac-motivo-badge">@item.motivoConsulta</span>
+                            </td>
+                        </tr>
+                        fila++;
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5">
+                                <div class="pac-empty">
+                                    <span>🏥</span>
+                                    <strong>Sin registros aún</strong>
+                                    <p style="margin-top:6px;font-size:0.85rem;">Aún no hay pacientes registrados en el sistema.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sin resultados al buscar -->
+        <div id="sinResultados"
+             style="display:none;"
+             class="pac-empty"
+             style="background:white;border-radius:16px;margin-top:16px;">
+            <span>🔍</span>
+            <strong>Sin resultados</strong>
+            <p style="margin-top:6px;font-size:0.85rem;">No se encontraron pacientes que coincidan con tu búsqueda.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     CTA CONTACTO
+════════════════════════════════════════════════ -->
+<section class="pac-cta">
+    <h2>¿Quieres ser parte de nuestra clínica?</h2>
+    <p>Contáctanos hoy y uno de nuestros especialistas te orientará para agendar tu primera consulta.</p>
+    <div class="pac-cta-btns">
+        <a href="tel:+56212345678" class="btn-pac-white">
+            <i class="fas fa-phone-alt"></i> +56 2 1234 5678
+        </a>
+        <a href="mailto:contacto@clinicapacientes.cl" class="btn-pac-outline">
+            <i class="fas fa-envelope"></i> contacto@clinicapacientes.cl
+        </a>
+    </div>
+</section>
+
+<script>
+    function filtrarTabla() {
+        const texto = document.getElementById('buscador').value.toLowerCase();
+        const filas = document.querySelectorAll('#tablaPacientes tbody tr');
+        let visibles = 0;
+
+        filas.forEach(fila => {
+            const contenido = fila.textContent.toLowerCase();
+            const coincide = contenido.includes(texto);
+            fila.style.display = coincide ? '' : 'none';
+            if (coincide) visibles++;
+        });
+
+        document.getElementById('sinResultados').style.display =
+            (visibles === 0 && texto.length > 0) ? 'block' : 'none';
+    }
+</script>

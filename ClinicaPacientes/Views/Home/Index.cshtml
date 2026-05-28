@@ -801,11 +801,9 @@
             <h1>Tu salud,<br><span>nuestra prioridad</span></h1>
             <p>Atención médica de excelencia con los mejores especialistas y tecnología de vanguardia. Estamos aquí para cuidarte a ti y a toda tu familia.</p>
             <div class="cp-hero-buttons">
-                <a asp-controller="Paciente" asp-action="Create" class="btn-cp-primary">
-                    <i class="fas fa-calendar-check"></i> Agendar Consulta
-                </a>
+              
                 <a asp-controller="Paciente" asp-action="Index" class="btn-cp-secondary">
-                    <i class="fas fa-stethoscope"></i> Portal Pacientes
+                    <i class="fas fa-stethoscope"></i> Lista de Pacientes
                 </a>
             </div>
         </div>
@@ -817,13 +815,7 @@
                     <p>Atención inmediata todos los días del año</p>
                 </div>
             </a>
-            <a asp-controller="Paciente" asp-action="Create" class="cp-hero-card">
-                <div class="cp-hero-card-ico">📋</div>
-                <div>
-                    <h5>Registrar Paciente</h5>
-                    <p>Agrega un nuevo paciente al sistema</p>
-                </div>
-            </a>
+           
             <a asp-controller="Paciente" asp-action="Index" class="cp-hero-card">
                 <div class="cp-hero-card-ico">🔬</div>
                 <div>
@@ -852,20 +844,20 @@
             <h4>Urgencias</h4>
             <p>Atención 24/7 los 365 días</p>
         </div>
-        <a asp-controller="Paciente" asp-action="Create" class="cp-qa-item" style="text-decoration:none">
+        <a  class="cp-qa-item" style="text-decoration:none">
             <div class="cp-qa-ico">📅</div>
-            <h4>Registrar Paciente</h4>
-            <p>Agrega un nuevo paciente</p>
+            <h4>Reserva de citas</h4>
+            <p>Citas disponibles 24/7 </p>
         </a>
         <div class="cp-qa-item">
             <div class="cp-qa-ico">🔬</div>
-            <h4>Mis Resultados</h4>
-            <p>Exámenes e informes médicos</p>
+            <h4>Resultados</h4>
+            <p>Exámenes e informes médicos en muy poco tiempo</p>
         </div>
         <a asp-controller="Paciente" asp-action="Index" class="cp-qa-item" style="text-decoration:none">
             <div class="cp-qa-ico">👤</div>
             <h4>Portal Pacientes</h4>
-            <p>Historial y ficha clínica</p>
+            <p>Historial de pacientes </p>
         </a>
     </div>
 </div>
@@ -911,7 +903,7 @@
             <div>
                 <h4>Cardiología</h4>
                 <p>Diagnóstico y tratamiento de enfermedades del corazón con equipos de última generación.</p>
-                <span class="cp-spec-link">Ver especialidad →</span>
+                
             </div>
         </div>
         <div class="cp-spec-card">
@@ -919,7 +911,7 @@
             <div>
                 <h4>Neurología</h4>
                 <p>Atención especializada en enfermedades del sistema nervioso central y periférico.</p>
-                <span class="cp-spec-link">Ver especialidad →</span>
+                
             </div>
         </div>
         <div class="cp-spec-card">
@@ -927,7 +919,7 @@
             <div>
                 <h4>Traumatología</h4>
                 <p>Tratamiento de lesiones musculoesqueléticas, fracturas y patologías ortopédicas.</p>
-                <span class="cp-spec-link">Ver especialidad →</span>
+               
             </div>
         </div>
         <div class="cp-spec-card">
@@ -935,7 +927,7 @@
             <div>
                 <h4>Pediatría</h4>
                 <p>Cuidado integral de la salud infantil desde el nacimiento hasta la adolescencia.</p>
-                <span class="cp-spec-link">Ver especialidad →</span>
+               
             </div>
         </div>
         <div class="cp-spec-card">
@@ -943,7 +935,7 @@
             <div>
                 <h4>Laboratorio Clínico</h4>
                 <p>Análisis clínicos de alta precisión con resultados rápidos y confiables.</p>
-                <span class="cp-spec-link">Ver especialidad →</span>
+                
             </div>
         </div>
         <div class="cp-spec-card">
@@ -951,13 +943,11 @@
             <div>
                 <h4>Imagenología</h4>
                 <p>Radiología, ecografías, resonancias magnéticas y tomografías computarizadas.</p>
-                <span class="cp-spec-link">Ver especialidad →</span>
+                
             </div>
         </div>
     </div>
-    <div class="cp-view-all">
-        <a href="#" class="btn-cp-outline">Ver todas las especialidades</a>
-    </div>
+    
 </section>
 
 <!-- ════════════════════════════════════════════════
@@ -1004,8 +994,8 @@
     <h2>¿Necesitas atención médica?</h2>
     <p>Agenda tu consulta de forma rápida y sencilla. Nuestro equipo está listo para atenderte.</p>
     <div class="cp-cta-row">
-        <a asp-controller="Paciente" asp-action="Create" class="btn-cp-white">
-            <i class="fas fa-calendar-check"></i> Registrar Nuevo Paciente
+        <a class="btn-cp-white">
+            <i class="fas fa-calendar-check"></i> Agenda tu cita cuando gustes
         </a>
         <a href="tel:+56212345678" class="btn-cp-border-white">
             <i class="fas fa-phone-alt"></i> +56 2 1234 5678

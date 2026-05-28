@@ -7,7 +7,7 @@
 <h2 class="mt-3">Administración de Pacientes</h2>
 <hr />
 
-@* ══════════════ FORMULARIO ══════════════ *@
+@* ══════════════ ALERTA DE ERROR Y ÉXITO ══════════════ *@
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -16,6 +16,16 @@
     </div>
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>✅</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+
+@* ══════════════ FORMULARIO ══════════════ *@
 <form id="formPaciente" asp-action="Registrar" method="post">
     @Html.AntiForgeryToken()
 
@@ -25,8 +35,7 @@
             <label class="form-label fw-bold">ID Paciente</label>
             <input type="number" id="idPaciente" name="idPaciente"
                    class="form-control" readonly
-                   style="background-color:#e9ecef; cursor:not-allowed
-;" />
+                   style="background-color:#e9ecef; cursor:not-allowed;" />
             <small class="text-muted">Generado automáticamente</small>
         </div>
 
@@ -84,13 +93,15 @@
     </div>
 
     <div class="mt-3 d-flex gap-2">
-        <button type="submit" class="btn btn-success">
+        
+        <button type="submit" id="btnRegistrar" class="btn btn-success">
             ✔ Registrar
         </button>
-        <button type="button" class="btn btn-warning" id="btnModificar" disabled>
+       
+        <button type="button" class="btn btn-warning" id="btnModificar">
             ✏️ Modificar
         </button>
-        <button type="button" class="btn btn-danger" id="btnEliminar" onclick="eliminarPaciente()" disabled>
+        <button type="button" class="btn btn-danger" id="btnEliminar">
             🗑 Eliminar
         </button>
         <button type="button" class="btn btn-secondary" onclick="cancelarFormulario()">
@@ -149,42 +160,13 @@
 @* ══════════════ JAVASCRIPT ══════════════ *@
 <script>
 
+    // ── Utilidades ──────────────────────────────────────────────────────────
+
     function validarRut(rut) {
         return /^\d{7,8}-[\dkK]$/.test(rut);
     }
 
-    function validarFormulario() {
-        const campos = [
-            'nombrePaciente', 'rutPaciente', 'fechaIngreso',
-            'edadPaciente',   'telefonoPaciente', 'emailPaciente',
-            'direccionPaciente', 'motivoConsulta'
-        ];
-
-
-        for (let id of campos) {
-            const campo = document.getElementById(id);
-            if (!campo.value.trim()) {
-                alert(`El campo "${campo.previousElementSibling.textContent.trim()}" es obligatorio.`);
-                campo.focus();
-                return false;
-            }
-        }
-            if (!validarRut(document.getElementById('rutPaciente').value.trim())) {
-                alert('El RUT debe tener el formato correcto.\nEjemplo: 12345678-9 o 1234567-K');
-                document.getElementById('rutPaciente').focus();
-                return false;
-             }
-
-    // ← NUEVO: verificar RUT duplicado en la tabla
-    const rutIngresado = document.getElementById('rutPaciente').value.trim();
-    const idActual     = document.getElementById('idPaciente').value.trim();
-    if (rutYaRegistrado(rutIngresado, idActual)) {
-        alert('⚠️ El RUT ya está registrado en el sistema.\nPor favor ingrese otro.');
-        document.getElementById('rutPaciente').focus();
-        return false;
-    }
-
-            // Verifica si el RUT ya existe en la tabla (excluyendo el paciente actual al modificar)
+    // Verifica si el RUT ya existe en la tabla (excluye al paciente actual al modificar)
     function rutYaRegistrado(rut, idActual) {
         const filas = document.querySelectorAll('.fila-paciente');
         for (let fila of filas) {
@@ -195,6 +177,38 @@
         return false;
     }
 
+    // ── Validación general del formulario ───────────────────────────────────
+
+    function validarFormulario() {
+        const campos = [
+            'nombrePaciente', 'rutPaciente', 'fechaIngreso',
+            'edadPaciente', 'telefonoPaciente', 'emailPaciente',
+            'direccionPaciente', 'motivoConsulta'
+        ];
+
+        for (let id of campos) {
+            const campo = document.getElementById(id);
+            if (!campo.value.trim()) {
+                alert(`El campo "${campo.previousElementSibling.textContent.trim()}" es obligatorio.`);
+                campo.focus();
+                return false;
+            }
+        }
+
+        if (!validarRut(document.getElementById('rutPaciente').value.trim())) {
+            alert('El RUT debe tener el formato correcto.\nEjemplo: 12345678-9 o 1234567-K');
+            document.getElementById('rutPaciente').focus();
+            return false;
+        }
+
+        const rutIngresado = document.getElementById('rutPaciente').value.trim();
+        const idActual     = document.getElementById('idPaciente').value.trim();
+        if (rutYaRegistrado(rutIngresado, idActual)) {
+            alert('⚠️ El RUT ya está registrado en el sistema.\nPor favor ingrese otro.');
+            document.getElementById('rutPaciente').focus();
+            return false;
+        }
+
         const edad = parseInt(document.getElementById('edadPaciente').value);
         if (isNaN(edad) || edad < 1 || edad > 120) {
             alert('La edad debe ser un número positivo entre 1 y 120.');
@@ -204,6 +218,28 @@
 
         return true;
     }
+
+    // ── Estado de los botones y campo RUT ───────────────────────────────────
+
+    // Llama esto al seleccionar una fila: bloquea Registrar y RUT
+    function modoEdicion() {
+        document.getElementById('btnRegistrar').disabled = true;
+        const rutField = document.getElementById('rutPaciente');
+        rutField.readOnly = true;
+        rutField.style.backgroundColor = '#e9ecef';
+        rutField.style.cursor = 'not-allowed';
+    }
+
+    // Llama esto al cancelar: restaura estado inicial
+    function modoRegistro() {
+        document.getElementById('btnRegistrar').disabled = false;
+        const rutField = document.getElementById('rutPaciente');
+        rutField.readOnly = false;
+        rutField.style.backgroundColor = '';
+        rutField.style.cursor = '';
+    }
+
+    // ── Click en fila de la tabla ────────────────────────────────────────────
 
     document.querySelectorAll('.fila-paciente').forEach(function (fila) {
         fila.addEventListener('click', function () {
@@ -220,14 +256,20 @@
             document.getElementById('emailPaciente').value     = this.dataset.email;
             document.getElementById('direccionPaciente').value = this.dataset.direccion;
             document.getElementById('motivoConsulta').value    = this.dataset.motivo;
+
+            modoEdicion(); // bloquear Registrar y RUT
         });
     });
+
+    // ── Botón Registrar (submit) ─────────────────────────────────────────────
 
     document.getElementById('formPaciente').addEventListener('submit', function (e) {
         if (!validarFormulario()) {
             e.preventDefault();
         }
     });
+
+    // ── Botón Modificar ──────────────────────────────────────────────────────
 
     document.getElementById('btnModificar').addEventListener('click', function () {
         const id = document.getElementById('idPaciente').value;
@@ -241,7 +283,9 @@
         document.getElementById('formPaciente').submit();
     });
 
-    function eliminarPaciente() {
+    // ── Botón Eliminar ───────────────────────────────────────────────────────
+
+    document.getElementById('btnEliminar').addEventListener('click', function () {
         const idPaciente = document.getElementById('idPaciente').value;
 
         if (!idPaciente) {
@@ -253,25 +297,27 @@
 
         const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-        const form        = document.createElement('form');
-        form.method       = 'post';
-        form.action       = '/Administracion/Eliminar';
+        const form       = document.createElement('form');
+        form.method      = 'post';
+        form.action      = '/Administracion/Eliminar';
 
-        const inputId     = document.createElement('input');
-        inputId.type      = 'hidden';
-        inputId.name      = 'idPaciente';
-        inputId.value     = idPaciente;
+        const inputId    = document.createElement('input');
+        inputId.type     = 'hidden';
+        inputId.name     = 'idPaciente';
+        inputId.value    = idPaciente;
 
-        const inputToken  = document.createElement('input');
-        inputToken.type   = 'hidden';
-        inputToken.name   = '__RequestVerificationToken';
-        inputToken.value  = token;
+        const inputToken = document.createElement('input');
+        inputToken.type  = 'hidden';
+        inputToken.name  = '__RequestVerificationToken';
+        inputToken.value = token;
 
         form.appendChild(inputId);
         form.appendChild(inputToken);
         document.body.appendChild(form);
         form.submit();
-    }
+    });
+
+    // ── Botón Cancelar ───────────────────────────────────────────────────────
 
     function cancelarFormulario() {
         ['idPaciente', 'nombrePaciente', 'rutPaciente', 'fechaIngreso',
@@ -280,14 +326,24 @@
             document.getElementById(id).value = '';
         });
 
-        // Restaurar action original del formulario
         document.getElementById('formPaciente').action = '/Administracion/Registrar';
+
         document.querySelectorAll('.fila-paciente')
                 .forEach(f => f.classList.remove('table-primary'));
 
-        document.querySelector('[type="submit"]').disabled = false;
-        document.getElementById('btnModificar').disabled   = true;
-        document.getElementById('btnEliminar').disabled    = true;
+        modoRegistro(); // 🔓 habilitar Registrar y desbloquear RUT
     }
 
+
+</script>
+
+
+<script>
+     // Auto-cerrar alertas después de 3 segundos
+    setTimeout(function () {
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 3000);
 </script>

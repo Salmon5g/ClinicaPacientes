@@ -48,7 +48,7 @@ namespace ClinicaPacientes.Controllers
         }
 
 
-        // POST: Registrar nuevo paciente
+    
 
         // POST: Registrar nuevo paciente
         [HttpPost]
@@ -98,6 +98,7 @@ namespace ClinicaPacientes.Controllers
                 cmd.ExecuteNonQuery();
             }
 
+            TempData["Success"] = "Paciente registrado con éxito.";
             return RedirectToAction("Index");
         }
 
@@ -140,6 +141,7 @@ namespace ClinicaPacientes.Controllers
                 cmd.ExecuteNonQuery();
             }
 
+            TempData["Success"] = "Modificación guardada con éxito.";
             return RedirectToAction("Index");
         }
 
@@ -164,6 +166,7 @@ namespace ClinicaPacientes.Controllers
                 cmd.ExecuteNonQuery();
             }
 
+            TempData["Success"] = "Registro eliminado con éxito.";
             return RedirectToAction("Index");
         }
     }
